@@ -1,7 +1,7 @@
 adduser.sh
 ==========
 
-Interactively adds a user to a Linux system.
+Shell script to interactively add a user to a Linux system, including importing a public key for ssh access..
 
 Script will ask for:-
 
@@ -16,3 +16,5 @@ It will then:-
 * create the home directory
 * create the .ssh directory
 * add the certificate to the "authorized_keys" file
+
+Script must be run as root or via sudo.
