@@ -27,14 +27,14 @@ def process_options():
     opts.add_argument("--something", "-s",
                       required=True,
                       help="some parameter")
-    opts.add_argument("--log", "-l",
+    opts.add_argument("--verbose", "-v",
                       required=False,
                       default=False,
                       action="store_true",
                       help="Send log messages to sysout")
     options = opts.parse_args()
 
-    return(options.something, options.log)
+    return(options.something, options.verbose)
 
 
 # --- CLASSES ----------------------------------------------------------------
