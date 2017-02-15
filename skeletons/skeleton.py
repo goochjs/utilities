@@ -11,6 +11,7 @@ Created on 1 Dec 2016
 # --- LIBRARIES --------------------------------------------------------------
 
 import argparse
+import logging
 import datetime
 import sys
 
@@ -21,12 +22,15 @@ def process_options():
     '''
     Processes command line options
     '''
-    
+
     opts = argparse.ArgumentParser(description="A skeleton script")
 
     opts.add_argument("--something", "-s",
                       required=True,
                       help="some parameter")
+    opts.add_argument("--something_else", "-e",
+                      required=True,
+                      help="another parameter")
     opts.add_argument("--verbose", "-v",
                       required=False,
                       default=False,
@@ -34,55 +38,42 @@ def process_options():
                       help="Send log messages to sysout")
     options = opts.parse_args()
 
-    return(options.something, options.verbose)
+    if options.verbose:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format='[%(levelname)s] (%(threadName)-10s) %(message)s',
+        )
+    else:
+        logging.basicConfig(
+            level=logging.INFO,
+            format='[%(levelname)s] (%(threadName)-10s) %(message)s',
+        )
+
+    return(
+        options.something,
+        options.something_else
+    )
 
 
 # --- CLASSES ----------------------------------------------------------------
 
-class script_logger(object):
-    def __init__(self, log_flag):
-        '''
-        Script control class for logging messages (if required) and stopping execution
-        '''
-        
-        self.log_flag = log_flag
 
 
-    def log(self, log_message):
-        '''
-        Prints a timestamped log message
-        '''
-    
-        if self.log_flag:
-            time_stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-            print (time_stamp + " " + log_message)
-
-
-    def stop(self, log_message, exit_code, override_flag):
-        '''
-        Stops the script, logging an output message and setting a return code
-        
-        The override flag parameter will force a log message, even if the script has been called in non-logging mode
-        '''
-    
-        if override_flag:
-            self.log_flag = True
-
-        self.log(log_message)
-        self.log("Exiting with return code " + str(exit_code))
-        sys.exit(exit_code)
-
-
-    
 # --- START OF MAIN ----------------------------------------------------------
 
 def main():
-    (some_parameter, log_flag) = process_options()
-    
-    logger = script_logger(log_flag)
-    logger.log("Started")
-    
-    logger.stop("Finished", 0, False)
+    start_time = datetime.datetime.now()
+    (some_parameter, another_parameter) = process_options()
+
+    logging.debug(datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p") + " Started")
+
+    # Do stuff here
+    logging.info("Parameter 1: " + some_parameter)
+    logging.info("Parameter 2: " + another_parameter)
+
+    exec_time = datetime.datetime.now() - start_time
+    logging.debug("Execution time " + str(exec_time))
+    logging.debug(datetime.datetime.now().strftime("%Y-%m-%d %I:%M:%S %p") + " Finished")
 
 
 
